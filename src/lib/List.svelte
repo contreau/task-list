@@ -8,6 +8,7 @@
 
   const removeTask = function (task) {
     let removed = $taskList.splice($taskList.indexOf(task), 1);
+    removed = removed[0];
     $completedTasks.push(removed);
     $taskList = $taskList;
   };
@@ -40,9 +41,12 @@
               removeTask(task);
             }}
           >
-            {task}
-            <br /><span class="timestamp"
+            {task.taskText}
+            <br /><span class="task-label time-stamp"
               >Created {new getDateTime().dateString}</span
+            >
+            <span class="task-label due-stamp"
+              >Due {task.day} at {task.hour}:{task.minute}</span
             >
           </li>
           <hr class="taskitem--borderBottom" />
@@ -59,7 +63,7 @@
     <ul class="taskList--list completedList">
       {#each $completedTasks as task}
         <li>
-          {task}<br /><span class="timestamp completed-stamp"
+          {task.taskText}<br /><span class="task-label completed-stamp"
             >Completed {new getDateTime().dateString}</span
           >
         </li>
@@ -72,7 +76,7 @@
 <style>
   .taskList {
     color: var(--orange);
-    /* min-height: 21.4rem; */
+    min-height: 40rem;
   }
 
   hr {
@@ -95,7 +99,7 @@
     text-align: left;
     list-style: none;
     padding-left: 0;
-    max-height: 21.4rem;
+    max-height: 36rem;
     overflow-y: auto;
   }
 
@@ -123,19 +127,26 @@
     /* border: solid 1px #ffffff51; */
   }
 
-  .timestamp {
+  .task-label {
     font-size: 0.9rem;
     border-radius: 30px;
     padding: 0.2em 0.4em;
-    background-color: var(--orange);
     transition: 0.4s all;
+  }
+
+  .time-stamp {
+    background-color: var(--orange);
+  }
+
+  .due-stamp {
+    background-color: red;
   }
 
   .completed-stamp {
     background-color: var(--green);
   }
 
-  .liveList li:hover .timestamp {
+  .liveList li:hover .task-label {
     background-color: #242424;
   }
 

@@ -3,7 +3,6 @@
   import TaskInput from "./lib/Input.svelte";
 </script>
 
-<!-- //TODO: Make it dark souls-inspired? -->
 <main>
   <div class="container">
     <TaskInput />
