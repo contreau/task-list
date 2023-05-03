@@ -27,7 +27,13 @@ export const getDateTime = function () {
     minutes = date.getMinutes();
   }
 
-  this.dateString = `${
-    months[date.getMonth()]
-  } ${date.getDate()}, ${date.getUTCFullYear()} at ${date.getHours()}:${minutes}`;
+  function getTimeStamp() {
+    let timeStr = `${
+      months[date.getMonth()]
+    } ${date.getDate()}, ${date.getUTCFullYear()} at ${date.getHours()}:${minutes}`;
+
+    return timeStr.slice();
+  }
+
+  this.dateString = getTimeStamp();
 };

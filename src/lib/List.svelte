@@ -12,6 +12,12 @@
     $completedTasks.push(removed);
     $taskList = $taskList;
   };
+
+  const categoryIcons = {
+    Work: "fa-briefcase",
+    Home: "fa-house",
+    Personal: "fa-hand-holding-hand",
+  };
 </script>
 
 <div class="taskList">
@@ -42,12 +48,19 @@
             }}
           >
             {task.taskText}
-            <br /><span class="task-label time-stamp"
-              >Created {new getDateTime().dateString}</span
-            >
-            <span class="task-label due-stamp"
+            <br /><span class="task-label due-stamp"
               >Due {task.day} at {task.hour}:{task.minute}</span
             >
+            <span class="task-label category-stamp"
+              ><i
+                style="margin-right: 0.2rem;"
+                class="fa-solid {categoryIcons[task.category]}"
+              />
+              {task.category}</span
+            >
+            <!-- <span class="task-label time-stamp"
+              >Created {new getDateTime().dateString}</span
+            > -->
           </li>
           <hr class="taskitem--borderBottom" />
         {/each}
@@ -60,6 +73,8 @@
         Nothing to see here... yet.
       </p>
     {/if}
+
+    <!-- TODO: fix completed timestamp, currently is modifying pre-existing completed stamps -->
     <ul class="taskList--list completedList">
       {#each $completedTasks as task}
         <li>
@@ -134,12 +149,16 @@
     transition: 0.4s all;
   }
 
-  .time-stamp {
+  /* .time-stamp {
     background-color: var(--orange);
-  }
+  } */
 
   .due-stamp {
-    background-color: red;
+    background-color: var(--darkorange);
+  }
+
+  .category-stamp {
+    background-color: #0042d2;
   }
 
   .completed-stamp {

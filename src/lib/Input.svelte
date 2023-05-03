@@ -2,22 +2,41 @@
   import { taskList, completedTasks, completedTaskView } from "./stores.js";
 
   let allFieldsFull = false;
+  let validTime = false;
   let dayInput;
   let hourInput;
   let minuteInput;
   let fieldWarning;
-
+  let category;
   let textArea;
+
   const pushTask = function () {
     if (!allFieldsFull) {
       // warning message appears if input fields are not all full
+      fieldWarning.innerHTML = "Fill all fields.";
       fieldWarning.style.opacity = 1;
       textArea.focus();
     }
+
+    if (hourInput.value > 23) {
+      fieldWarning.innerText = "Invalid hour.";
+      hourInput.focus();
+    } else if (minuteInput.value > 59) {
+      fieldWarning.innerText = "Invalid minutes.";
+      minuteInput.focus();
+    } else if (
+      hourInput.value <= 23 &&
+      minuteInput.value <= 59 &&
+      textArea.value != ""
+    ) {
+      validTime = true;
+    }
+
     if (
       textArea.value != "" &&
       hourInput.value != "" &&
-      minuteInput.value != ""
+      minuteInput.value != "" &&
+      validTime
     ) {
       allFieldsFull = true;
       fieldWarning.style.opacity = 0;
@@ -28,6 +47,7 @@
           day: dayInput.value,
           hour: hourInput.value,
           minute: minuteInput.value,
+          category: category.value,
         },
       ];
       textArea.value = "";
@@ -35,6 +55,7 @@
       minuteInput.value = "";
       textArea.focus();
       allFieldsFull = false;
+      validTime = false;
     }
   };
 
@@ -96,6 +117,11 @@
       <option value="am">a.m.</option>
       <option value="pm">p.m.</option>
     </select> -->
+    <select bind:this={category} name="days" id="daySelect">
+      <option value="Work">Work</option>
+      <option value="Home">Home</option>
+      <option value="Personal">Personal</option>
+    </select>
     <p bind:this={fieldWarning} class="missing-attribute-msg">
       Fill all fields.
     </p>
@@ -170,13 +196,15 @@
     align-items: center;
   }
 
-  .setDateTime {
+  div.setDateTime {
     font-size: 1rem;
+    justify-content: space-around;
+    gap: 0.8em;
   }
 
   .missing-attribute-msg {
     font-size: 1rem;
-    max-width: 250px;
+    max-width: 150px;
     width: 100%;
     background-color: red;
     color: #fff;
