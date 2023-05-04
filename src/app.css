@@ -14,7 +14,7 @@
   -webkit-text-size-adjust: 100%;
   --orange: #ff5100;
   --green: rgb(37, 163, 73);
-  --darkorange: #bd4800;
+  --darkorange: #c74c00;
 }
 
 a {
@@ -63,6 +63,16 @@ main {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.flame {
+  display: inline;
+  height: auto;
+  position: absolute;
+  max-width: 55px;
+  transform: translateY(0.4em);
+  bottom: 27%;
+  left: 36%;
 }
 
 textarea {

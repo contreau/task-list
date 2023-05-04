@@ -82,7 +82,7 @@
   <textarea
     bind:this={textArea}
     class="textArea"
-    placeholder="Build something with Svelte."
+    placeholder="Burn off your tasks."
   />
   <div class="setDateTime buttons">
     <select bind:this={dayInput} name="days" id="daySelect">
@@ -155,7 +155,10 @@
     </button>
     <button class="clearTasks" on:click={clearAll}
       ><span class="buttonOption--span"
-        ><img class="flame" src="/flame.gif" alt="flame" />Clear Tasks</span
+        ><i
+          class="fa-regular fa-circle-check"
+          style="font-size: 1.5rem; color: var(--orange);"
+        />Clear Tasks</span
       ></button
     >
   </div>
@@ -170,17 +173,6 @@
 
   .showCompletedTasks--button {
     min-width: 15.875rem;
-  }
-
-  .clearTasks {
-    padding: 0.2em 1.2em;
-  }
-
-  .flame {
-    display: inline;
-    height: auto;
-    max-width: 25px;
-    transform: translateY(-0.3em);
   }
 
   .buttonOption--span {
