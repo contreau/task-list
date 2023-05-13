@@ -5,6 +5,7 @@
     completedTaskView,
     getDateTime,
   } from "./stores.js";
+  import { fade } from "svelte/transition";
 
   const removeTask = function (task) {
     let removed = $taskList.splice($taskList.indexOf(task), 1);
@@ -18,6 +19,45 @@
     Home: "fa-house",
     Personal: "fa-hand-holding-hand",
   };
+
+  let filterAll = true;
+  let filterWork = false;
+  let filterHome = false;
+  let filterPersonal = false;
+
+  let workList = [];
+  let homeList = [];
+  let personalList = [];
+
+  const selectFilter = (filterType) => {
+    [filterAll, filterWork, filterHome, filterPersonal] = [
+      false,
+      false,
+      false,
+      false,
+    ];
+    switch (filterType) {
+      case "all":
+        filterAll = true;
+        break;
+      case "work":
+        filterAll = false;
+        filterWork = true;
+        workList = $taskList.filter((task) => task.category === "Work");
+        break;
+      case "home":
+        filterAll = false;
+        filterHome = true;
+        homeList = $taskList.filter((task) => task.category === "Home");
+        break;
+      case "personal":
+        filterAll = false;
+        filterPersonal = true;
+        personalList = $taskList.filter((task) => task.category === "Personal");
+        break;
+    }
+    console.log(filterAll, filterWork, filterHome, filterPersonal);
+  };
 </script>
 
 <div class="taskList">
@@ -26,10 +66,30 @@
     <hr style="color: var(--orange);" />
 
     <div class="filterOptions">
-      <button class="filter-btn">All</button>
-      <button class="filter-btn">Work</button>
-      <button class="filter-btn">Home</button>
-      <button class="filter-btn">Personal</button>
+      <button
+        on:click={() => {
+          selectFilter("all");
+        }}
+        class="filter-btn">All</button
+      >
+      <button
+        on:click={() => {
+          selectFilter("work");
+        }}
+        class="filter-btn">Work</button
+      >
+      <button
+        on:click={() => {
+          selectFilter("home");
+        }}
+        class="filter-btn">Home</button
+      >
+      <button
+        on:click={() => {
+          selectFilter("personal");
+        }}
+        class="filter-btn">Personal</button
+      >
     </div>
   {:else}
     <p class="taskList--title">Completed Tasks</p>
@@ -39,38 +99,150 @@
   <!-- Standard Task List -->
   {#if !$completedTaskView}
     <div>
-      {#if $taskList.length === 0}
-        <p style="color: #fff; margin-top: 2rem; font-size: 1.3rem">
-          Let's get to work ✍️
-        </p>
+      <!-- DEFAULT TASK FILTER -->
+      {#if filterAll}
+        {#if $taskList.length === 0}
+          <p in:fade style="color: #fff; margin-top: 2rem; font-size: 1.3rem">
+            Let's get to work ✍️
+          </p>
+        {/if}
+        <ul class="taskList--list liveList">
+          {#each $taskList as task}
+            <div class="task-item--wrap">
+              <li
+                on:click={() => {
+                  removeTask(task);
+                }}
+                on:keypress={() => {
+                  removeTask(task);
+                }}
+              >
+                {task.taskText}
+                <br /><span class="task-label due-stamp"
+                  >Due {task.day} at {task.hour}:{task.minute}</span
+                >
+                <span class="task-label category-stamp"
+                  ><i
+                    style="margin-right: 0.2rem;"
+                    class="fa-solid {categoryIcons[task.category]}"
+                  />
+                  {task.category}</span
+                >
+              </li>
+              <hr class="taskitem--borderBottom" />
+            </div>
+          {/each}
+        </ul>
       {/if}
-      <ul class="taskList--list liveList">
-        {#each $taskList as task}
-          <div class="task-item--wrap">
-            <li
-              on:click={() => {
-                removeTask(task);
-              }}
-              on:keypress={() => {
-                removeTask(task);
-              }}
-            >
-              {task.taskText}
-              <br /><span class="task-label due-stamp"
-                >Due {task.day} at {task.hour}:{task.minute}</span
+
+      <!-- WORK TASK FILTER -->
+      {#if filterWork}
+        {#if workList.length === 0}
+          <p in:fade style="color: #fff; margin-top: 2rem; font-size: 1.3rem">
+            No work to do!<br />Maybe go use the bathroom.
+          </p>
+        {/if}
+        <ul class="taskList--list liveList">
+          {#each workList as task}
+            <div class="task-item--wrap">
+              <li
+                on:click={() => {
+                  removeTask(task);
+                }}
+                on:keypress={() => {
+                  removeTask(task);
+                }}
               >
-              <span class="task-label category-stamp"
-                ><i
-                  style="margin-right: 0.2rem;"
-                  class="fa-solid {categoryIcons[task.category]}"
-                />
-                {task.category}</span
+                {task.taskText}
+                <br /><span class="task-label due-stamp"
+                  >Due {task.day} at {task.hour}:{task.minute}</span
+                >
+                <span class="task-label category-stamp"
+                  ><i
+                    style="margin-right: 0.2rem;"
+                    class="fa-solid {categoryIcons[task.category]}"
+                  />
+                  {task.category}</span
+                >
+              </li>
+              <hr class="taskitem--borderBottom" />
+            </div>
+          {/each}
+        </ul>
+      {/if}
+
+      <!-- HOME TASK FILTER -->
+      {#if filterHome}
+        {#if homeList.length === 0}
+          <p in:fade style="color: #fff; margin-top: 2rem; font-size: 1.3rem">
+            All good on the homestead.
+          </p>
+        {/if}
+        <ul class="taskList--list liveList">
+          {#each homeList as task}
+            <div class="task-item--wrap">
+              <li
+                on:click={() => {
+                  removeTask(task);
+                }}
+                on:keypress={() => {
+                  removeTask(task);
+                }}
               >
-            </li>
-            <hr class="taskitem--borderBottom" />
-          </div>
-        {/each}
-      </ul>
+                {task.taskText}
+                <br /><span class="task-label due-stamp"
+                  >Due {task.day} at {task.hour}:{task.minute}</span
+                >
+                <span class="task-label category-stamp"
+                  ><i
+                    style="margin-right: 0.2rem;"
+                    class="fa-solid {categoryIcons[task.category]}"
+                  />
+                  {task.category}</span
+                >
+              </li>
+              <hr class="taskitem--borderBottom" />
+            </div>
+          {/each}
+        </ul>
+      {/if}
+
+      <!-- PERSONAL TASK FILTER -->
+      {#if filterPersonal}
+        {#if personalList.length === 0}
+          <p in:fade style="color: #fff; margin-top: 2rem; font-size: 1.3rem">
+            This time, it's personal.<br />(this joke only works if you have
+            tasks)
+          </p>
+        {/if}
+        <ul class="taskList--list liveList">
+          {#each personalList as task}
+            <div class="task-item--wrap">
+              <li
+                on:click={() => {
+                  removeTask(task);
+                }}
+                on:keypress={() => {
+                  removeTask(task);
+                }}
+              >
+                {task.taskText}
+                <br /><span class="task-label due-stamp"
+                  >Due {task.day} at {task.hour}:{task.minute}</span
+                >
+                <span class="task-label category-stamp"
+                  ><i
+                    style="margin-right: 0.2rem;"
+                    class="fa-solid {categoryIcons[task.category]}"
+                  />
+                  {task.category}</span
+                >
+              </li>
+              <hr class="taskitem--borderBottom" />
+            </div>
+          {/each}
+        </ul>
+      {/if}
     </div>
   {:else}
     <!-- Completed Task List -->
@@ -87,8 +259,15 @@
         <div class="completed-item--wrap">
           <li>
             {task.taskText}<br /><span class="task-label completed-stamp"
-              >Completed {new getDateTime().dateString}</span
-            >
+              >Completed <i class="fa-solid fa-check" />
+            </span>
+            <span class="task-label category-stamp">
+              <i
+                style="margin-right: 0.2rem;"
+                class="fa-solid {categoryIcons[task.category]}"
+              />
+              {task.category}
+            </span>
           </li>
           <hr class="taskitem--borderBottom" />
         </div>
